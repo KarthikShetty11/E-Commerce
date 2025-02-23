@@ -84,9 +84,25 @@ function addToCart(productId) {
 
     saveCart(cart);
     alert(`${product.name} added to cart!`);
+
+    // Push add_to_cart event to dataLayer
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+        event: "add_to_cart",
+        ecommerce: {
+            items: [{
+                item_id: product.id,
+                item_name: product.name,
+                price: product.price,
+                quantity: 1
+            }]
+        }
+    });
 }
 
+
 // Load Cart Items on Cart Page
+
 function loadCartItems() {
     const cartContainer = document.getElementById("cart-items");
     const totalDisplay = document.getElementById("cart-total");
@@ -109,14 +125,50 @@ function loadCartItems() {
 
     totalDisplay.textContent = total.toFixed(2);
     document.getElementById("checkout-btn").disabled = cart.length === 0;
+
+    // Push view_cart event to dataLayer
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+        event: "view_cart",
+        ecommerce: {
+            items: cart.map(item => ({
+                item_id: item.id,
+                item_name: item.name,
+                price: item.price,
+                quantity: item.quantity
+            }))
+        }
+    });
 }
 
 // Remove Item from Cart
+// function removeFromCart(productId) {
+//     let cart = getCart().filter(item => item.id !== productId);
+//     saveCart(cart);
+//     loadCartItems();
+// }
 function removeFromCart(productId) {
-    let cart = getCart().filter(item => item.id !== productId);
+    let cart = getCart();
+    let item = cart.find(i => i.id === productId);
+    if (!item) return;
+
+    cart = cart.filter(i => i.id !== productId);
     saveCart(cart);
     loadCartItems();
-    
+
+    // Push remove_from_cart event to dataLayer
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+        event: "remove_from_cart",
+        ecommerce: {
+            items: [{
+                item_id: item.id,
+                item_name: item.name,
+                price: item.price,
+                quantity: item.quantity
+            }]
+        }
+    });
 }
 
 function clearCart() {
