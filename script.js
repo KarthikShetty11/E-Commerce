@@ -42,6 +42,7 @@ function loadFeaturedProducts() {
             container.appendChild(productDiv);
         }
     });
+
 }
 
 // Load Products into Products Page
@@ -115,6 +116,7 @@ function removeFromCart(productId) {
     let cart = getCart().filter(item => item.id !== productId);
     saveCart(cart);
     loadCartItems();
+    
 }
 
 function clearCart() {
@@ -156,6 +158,19 @@ function loadCheckoutItems() {
 
     totalDisplay.textContent = total.toFixed(2);
     document.getElementById("buy-now").disabled = cart.length === 0;
+
+    // **GA4 eCommerce Tracking - Begin Checkout**
+    dataLayer.push({
+        event: "begin_checkout",
+        ecommerce: {
+            items: cart.map(item => ({
+                item_id: item.id,
+                item_name: item.name,
+                price: item.price,
+                quantity: item.quantity
+            }))
+        }
+    });
 }
 
 // Place Order
@@ -172,6 +187,22 @@ function placeOrder() {
 
     localStorage.removeItem("cart"); // Clear cart after purchase
     window.location.href = "confirmation.html";
+
+    // **GA4 eCommerce Tracking - Purchase**
+    dataLayer.push({
+        event: "purchase",
+        ecommerce: {
+            transaction_id: `ORD-${Date.now()}`,
+            value: totalAmount.toFixed(2),
+            currency: "USD",
+            items: cart.map(item => ({
+                item_id: item.id,
+                item_name: item.name,
+                price: item.price,
+                quantity: item.quantity
+            }))
+        }
+    });
 }
 
 // Load Order History on Orders Page
