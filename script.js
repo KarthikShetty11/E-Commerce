@@ -37,7 +37,7 @@ function loadFeaturedProducts() {
             productDiv.innerHTML = `
                 <h2>${product.name}</h2>
                 <p>Price: $${product.price.toFixed(2)}</p>
-                <button onclick="addToCart(${product.id})">Add to Cart</button>
+                <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
             `;
             container.appendChild(productDiv);
         }
@@ -56,7 +56,7 @@ function loadProducts() {
         productDiv.innerHTML = `
             <h2>${product.name}</h2>
             <p>Price: $${product.price.toFixed(2)}</p>
-            <button onclick="addToCart(${product.id})">Add to Cart</button>
+            <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
         `;
         container.appendChild(productDiv);
     });
